@@ -2,39 +2,14 @@ extern crate amethyst;
 
 use amethyst::Result;
 use amethyst::prelude::*;
-use amethyst::renderer::{DisplayConfig, DrawFlat, Event, KeyboardInput,
-                         Pipeline, PosTex, RenderBundle, Stage, 
-                         VirtualKeyCode, WindowEvent};
+use amethyst::renderer::{DisplayConfig, DrawFlat, Pipeline, 
+                         PosTex, RenderBundle, Stage};
 
-struct Pong;
-
-impl<'a, 'b> State<GameData<'a, 'b>> for Pong {
-    
-    fn handle_event(&mut self, _: StateData<GameData>, event: Event) -> Trans<GameData<'a, 'b>> {
-        match event {
-            Event::WindowEvent { event, .. } => match event {
-                WindowEvent::KeyboardInput {
-                    input:
-                        KeyboardInput {
-                            virtual_keycode: Some(VirtualKeyCode::Escape),
-                            ..
-                        },
-                    ..
-                } => Trans::Quit,
-                _ => Trans::None,
-            },
-            _ => Trans::None,
-        }
-    }
-
-    fn update(&mut self, game_state: StateData<GameData>) -> Trans<GameData<'a, 'b>> {
-        game_state.data.update(&game_state.world);
-        Trans::None
-    }
-
-}
+mod pong;
 
 fn run() -> Result<()> {
+    use pong::Pong;
+
     let path = "./resources/display_config.ron";
 
     let config = DisplayConfig::load(&path);
