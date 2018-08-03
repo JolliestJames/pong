@@ -1,3 +1,4 @@
+use amethyst::ecs::prelude::{Component, DenseVecStorage};
 use amethyst::prelude::*;
 use amethyst::renderer::{Event, KeyboardInput,
                          VirtualKeyCode, WindowEvent};
@@ -28,4 +29,29 @@ impl<'a, 'b> State<GameData<'a, 'b>> for Pong {
         Trans::None
     }
 
+}
+
+enum Side {
+    Left,
+    Right,
+}
+
+struct Paddle {
+    pub side: Side,
+    pub width: f32,
+    pub height: f32,
+}
+
+impl Paddle {
+    fn new(side: Side) -> Paddle {
+        Paddle {
+            side: side,
+            width: 1.0,
+            height: 1.0
+        }
+    }
+}
+
+impl Component for Paddle {
+    type Storage = DenseVecStorage<Self>;
 }
