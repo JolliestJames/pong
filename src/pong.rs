@@ -1,12 +1,20 @@
+use amethyst::assets::Loader;
+use amethyst::core::cgmath::Vector3;
+use amethyst::core::transform::{GlobalTransform, Transform};
 use amethyst::ecs::prelude::{Component, DenseVecStorage};
 use amethyst::prelude::*;
-use amethyst::renderer::{Event, KeyboardInput,
-                         VirtualKeyCode, WindowEvent};
+use amethyst::renderer::{Camera, Event, KeyboardInput, Material, MaterialDefaults, MeshHandle,
+                         PosTex, VirtualKeyCode, WindowEvent};
 
 pub struct Pong;
 
 impl<'a, 'b> State<GameData<'a, 'b>> for Pong {
     
+    fn on_start(&mut self, game_state: StateData<GameData>) {
+        let world = game_state.world;
+        world.register::<Paddle>();
+    }
+
     fn handle_event(&mut self, _: StateData<GameData>, event: Event) -> Trans<GameData<'a, 'b>> {
         match event {
             Event::WindowEvent { event, .. } => match event {
@@ -31,6 +39,7 @@ impl<'a, 'b> State<GameData<'a, 'b>> for Pong {
 
 }
 
+#[derive(PartialEq, Eq)]
 enum Side {
     Left,
     Right,
