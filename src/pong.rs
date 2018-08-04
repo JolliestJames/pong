@@ -67,13 +67,18 @@ impl Component for Paddle {
 
 const PADDLE_HEIGHT: f32 = 0.30;
 const PADDLE_WIDTH: f32 = 0.05;
-const PADDLE_COLOUR: [f32; 4] = [0.0, 0.0, 1.0, 1.0];
+const PADDLE_COLOR: [f32; 4] = [0.0, 1.0, 1.0, 1.0];
 
 fn initialize_paddles(world: &mut World) {
     let mut left_transform = Transform::default();
     let mut right_transform = Transform::default();
 
-    //correctly position the paddles
+    let mesh = create_mesh(
+        world,
+        generate_rectangle_vertices(0.0, 0.0, PADDLE_WIDTH, PADDLE_HEIGHT),
+    );
+    
+    let material = create_color_material(world, PADDLE_COLOR);
 
     let y = -PADDLE_HEIGHT/2.0;
     left_transform.translation = Vector3::new(-1.0, y, 0.0);
@@ -81,6 +86,8 @@ fn initialize_paddles(world: &mut World) {
 
     world
         .create_entity()
+        .with(mesh.clone())
+        .with(material.clone())
         .with(Paddle::new(Side::Left))
         .with(GlobalTransform::default())
         .with(left_transform)
@@ -88,6 +95,8 @@ fn initialize_paddles(world: &mut World) {
 
     world
         .create_entity()
+        .with(mesh.clone())
+        .with(material.clone())
         .with(Paddle::new(Side::Right))
         .with(GlobalTransform::default())
         .with(right_transform)
@@ -127,6 +136,25 @@ fn generate_rectangle_vertices(left: f32,
             tex_coord: [0.0, 0.0],
         },
     ]
-    
 
+}
+
+fn create_mesh(world: &World, vertices: Vec<PosTex>) -> MeshHandle {
+    let loader = world.read_resource::<Loader>();
+    loader.load_from_data(vertices.into(), (), &world.read_resource())
+}
+
+/// Creates a solid material of the specified color.
+fn create_color_material(world: &World, color: [f32; 4]) -> Material {
+    let mat_defaults = world.read_resource::<MaterialDefaults>();
+    let loader = world.read_resource::<Loader>();
+
+    let albedo = loader.load_from_data(color.into(),
+                                       (),
+                                       &world.read_resource());
+
+    Material {
+        albedo,
+        ..mat_defaults.0.clone()
+    }
 }
