@@ -13,6 +13,8 @@ impl<'a, 'b> State<GameData<'a, 'b>> for Pong {
     fn on_start(&mut self, game_state: StateData<GameData>) {
         let world = game_state.world;
         world.register::<Paddle>();
+        initialize_paddles(world);
+        initialize_camera(world);
     }
 
     fn handle_event(&mut self, _: StateData<GameData>, event: Event) -> Trans<GameData<'a, 'b>> {
@@ -157,4 +159,11 @@ fn create_color_material(world: &World, color: [f32; 4]) -> Material {
         albedo,
         ..mat_defaults.0.clone()
     }
+}
+
+fn initialize_camera(world: &mut World) {
+    world
+        .create_entity()
+        .with(Camera::standard_2d())
+        .build();
 }
