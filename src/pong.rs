@@ -64,3 +64,69 @@ impl Paddle {
 impl Component for Paddle {
     type Storage = DenseVecStorage<Self>;
 }
+
+const PADDLE_HEIGHT: f32 = 0.30;
+const PADDLE_WIDTH: f32 = 0.05;
+const PADDLE_COLOUR: [f32; 4] = [0.0, 0.0, 1.0, 1.0];
+
+fn initialize_paddles(world: &mut World) {
+    let mut left_transform = Transform::default();
+    let mut right_transform = Transform::default();
+
+    //correctly position the paddles
+
+    let y = -PADDLE_HEIGHT/2.0;
+    left_transform.translation = Vector3::new(-1.0, y, 0.0);
+    right_transform.translation = Vector3::new(1.0 - PADDLE_WIDTH, y, 0.0);
+
+    world
+        .create_entity()
+        .with(Paddle::new(Side::Left))
+        .with(GlobalTransform::default())
+        .with(left_transform)
+        .build();
+
+    world
+        .create_entity()
+        .with(Paddle::new(Side::Right))
+        .with(GlobalTransform::default())
+        .with(right_transform)
+        .build();
+
+}
+
+fn generate_rectangle_vertices(left: f32,
+                               bottom: f32,
+                               right: f32, 
+                               top: f32) -> Vec<PosTex> {
+
+    vec![
+        PosTex {
+            position: [left, bottom, 0.],
+            tex_coord: [0.0, 0.0],
+        },
+        PosTex {
+            position: [right, bottom, 0.],
+            tex_coord: [0.0, 0.0],
+        },
+        PosTex {
+            position: [left, top, 0.],
+            tex_coord: [0.0, 0.0],
+        },
+        PosTex {
+            position: [right, top, 0.],
+            tex_coord: [0.0, 0.0],
+        },
+        PosTex {
+            position: [left, top, 0.],
+            tex_coord: [0.0, 0.0],
+        },
+
+        PosTex {
+            position: [right, bottom, 0.],
+            tex_coord: [0.0, 0.0],
+        },
+    ]
+    
+
+}
